@@ -44,11 +44,11 @@ export default class Home extends React.Component {
     return value;
   }
 
-  // get dateRef() {
-  //   let date = new Date();
-  //   let dateRef = `${date.getDate()}_${date.getMonth()}_${date.getFullYear()}`;
-  //   return dateRef;
-  // }
+  get dateRef() {
+    let date = new Date();
+    let dateRef = `${date.getDate()}_${date.getMonth()}_${date.getFullYear()}`;
+    return dateRef;
+  }
 
   // formatDate(dateString = "") {
   //   return dateString.split("_").join("/");
