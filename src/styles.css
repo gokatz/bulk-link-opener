@@ -4,8 +4,11 @@
 }
 
 .form-check {
-  padding: 5px 30px;
-  border: 1px solid #eee;
   margin-top: 5px;
   border-radius: 5px;
+}
+
+.link-content {
+  word-break: break-all;
+  font-size: 12px;
 }
