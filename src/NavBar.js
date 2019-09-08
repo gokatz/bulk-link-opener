@@ -27,7 +27,7 @@ class NavBar extends React.Component {
     return (
       <nav className="navbar navbar-dark bg-dark">
         <Link to="/" className="navbar-brand">
-          Opener
+          Opener X
         </Link>
 
         <div id="navbarText">
