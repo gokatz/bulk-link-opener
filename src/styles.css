@@ -1,0 +1,11 @@
+.App {
+  font-family: sans-serif;
+  padding: 10px;
+}
+
+.form-check {
+  padding: 5px 30px;
+  border: 1px solid #eee;
+  margin-top: 5px;
+  border-radius: 5px;
+}
