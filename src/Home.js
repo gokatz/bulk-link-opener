@@ -7,7 +7,8 @@ import "./styles.css";
 export default class Home extends React.Component {
   state = {
     items: [],
-    isFetchingList: false
+    isFetchingList: false,
+    currentText: ""
   };
 
   componentDidMount() {
@@ -59,9 +60,8 @@ export default class Home extends React.Component {
     return uid ? `users/${uid}` : null;
   }
 
-  writeUserData(text) {
-    let inputField = this.refs.inputField || {};
-    text = text || inputField.value;
+  writeUserData = text => {
+    text = text || this.state.currentText;
 
     if (!text) {
       return;
@@ -71,13 +71,15 @@ export default class Home extends React.Component {
     }
 
     let paginatedListRef = window.firebase.database().ref(this.databaseRef);
-    var newItemRef = paginatedListRef.push();
-    inputField.value = "";
-    return newItemRef.set({
+    var newItemDBRef = paginatedListRef.push();
+    this.setState({
+      currentText: ""
+    });
+    return newItemDBRef.set({
       value: text,
       date: this.dateRef
     });
-  }
+  };
 
   deleteItem = id => {
     return window.firebase
@@ -105,7 +107,7 @@ export default class Home extends React.Component {
   };
 
   render() {
-    let { isFetchingList, items } = this.state;
+    let { isFetchingList, items, currentText } = this.state;
     let { isFetchingUser } = this.props;
 
     let itemsList = (
@@ -124,6 +126,12 @@ export default class Home extends React.Component {
       <div className="App container">
         <div className="col-xs-12 col-md-6">
           <TextInput
+            updateInputText={value => {
+              this.setState({
+                currentText: value
+              });
+            }}
+            currentText={currentText}
             addText={this.addText}
             writeUserData={this.writeUserData}
           />

@@ -6,12 +6,15 @@ export default class Item extends React.Component {
   };
 
   render() {
-    let { addText, writeUserData } = this.props;
+    let { addText, writeUserData, currentText, updateInputText } = this.props;
     return (
       <form onSubmit={this.onSubmit}>
         <div className="form-group">
           <input
-            ref="inputField"
+            value={currentText}
+            onChange={event => {
+              updateInputText(event.target.value);
+            }}
             className="form-control"
             placeholder="Enter URL"
             onKeyDown={addText}
