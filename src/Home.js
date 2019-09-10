@@ -156,7 +156,7 @@ export default class Home extends React.Component {
                 <input
                   className="form-control"
                   placeholder="key"
-                  type="number"
+                  type="password"
                   ref={node => {
                     this.keyNode = node;
                   }}
