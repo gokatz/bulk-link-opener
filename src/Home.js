@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Item from "./Item";
 import TextInput from "./TextInput";
 
@@ -8,7 +8,8 @@ export default class Home extends React.Component {
   state = {
     items: [],
     isFetchingList: false,
-    currentText: ""
+    currentText: "",
+    isAuthenticated: false
   };
 
   componentDidMount() {
@@ -106,8 +107,17 @@ export default class Home extends React.Component {
     await this.writeUserData(target.value);
   };
 
+  authUser = () => {
+    let key = this.keyNode.value;
+    if (key === "1308") {
+      this.setState({
+        isAuthenticated: true
+      });
+    }
+  };
+
   render() {
-    let { isFetchingList, items, currentText } = this.state;
+    let { isFetchingList, items, currentText, isAuthenticated } = this.state;
     let { isFetchingUser } = this.props;
 
     let itemsList = (
@@ -138,7 +148,27 @@ export default class Home extends React.Component {
 
           <hr />
 
-          {itemsList}
+          {isAuthenticated ? (
+            itemsList
+          ) : (
+            <Fragment>
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  placeholder="key"
+                  type="number"
+                  ref={node => {
+                    this.keyNode = node;
+                  }}
+                />
+              </div>
+              <div className="form-group">
+                <button className="btn btn-secondary" onClick={this.authUser}>
+                  Enter Key
+                </button>
+              </div>
+            </Fragment>
+          )}
 
           <hr />
           {itemsList.length && (
