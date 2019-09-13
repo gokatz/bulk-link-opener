@@ -9,7 +9,7 @@ export default class Home extends React.Component {
     items: [],
     isFetchingList: false,
     currentText: "",
-    isAuthenticated: false
+    isAuthenticated: true
   };
 
   componentDidMount() {
@@ -82,11 +82,33 @@ export default class Home extends React.Component {
     });
   };
 
-  deleteItem = id => {
+  deleteItem = ({ id, star }) => {
+    if (star) {
+      alert("cannot delete a starred link");
+      return;
+    }
     return window.firebase
       .database()
       .ref(`${this.databaseRef}/${id}`)
       .remove();
+  };
+
+  starItem = id => {
+    return window.firebase
+      .database()
+      .ref(`${this.databaseRef}/${id}`)
+      .update({
+        star: true
+      });
+  };
+
+  unstarItem = id => {
+    return window.firebase
+      .database()
+      .ref(`${this.databaseRef}/${id}`)
+      .update({
+        star: false
+      });
   };
 
   openInBrowser = () => {
@@ -128,7 +150,15 @@ export default class Home extends React.Component {
       itemsList = <div className="text-center text-muted">Loading...</div>;
     } else if (items.length) {
       itemsList = items.map(text => {
-        return <Item text={text} key={text.id} deleteItem={this.deleteItem} />;
+        return (
+          <Item
+            text={text}
+            key={text.id}
+            deleteItem={this.deleteItem}
+            starItem={this.starItem}
+            unstarItem={this.unstarItem}
+          />
+        );
       });
     }
 

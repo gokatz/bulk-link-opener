@@ -2,12 +2,11 @@ import React from "react";
 
 export default class Item extends React.Component {
   render() {
-    let { text, deleteItem } = this.props;
+    let { text, deleteItem, starItem, unstarItem } = this.props;
     return (
       <div className="form-check">
         <label className="form-check-label link-content" htmlFor={text.id}>
           <input
-            type="text"
             className="form-check-input"
             type="checkbox"
             onChange={event => {
@@ -15,11 +14,28 @@ export default class Item extends React.Component {
             }}
             id={text.id}
           />
+          {text.star ? "⭐" : null}
           {text.value} &nbsp;&nbsp;
         </label>
+        {text.star ? (
+          <small
+            className="btn-link cursor-pointer"
+            onClick={() => unstarItem(text.id)}
+          >
+            (UnStar)
+          </small>
+        ) : (
+          <small
+            className="btn-link cursor-pointer"
+            onClick={() => starItem(text.id)}
+          >
+            (Star)
+          </small>
+        )}
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <small
           className="btn-link cursor-pointer"
-          onClick={() => deleteItem(text.id)}
+          onClick={() => deleteItem(text)}
         >
           (Del)
         </small>
