@@ -9,7 +9,7 @@ export default class Home extends React.Component {
     items: [],
     isFetchingList: false,
     currentText: "",
-    isAuthenticated: true
+    isAuthenticated: false
   };
 
   componentDidMount() {
