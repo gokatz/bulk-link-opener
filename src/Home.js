@@ -190,6 +190,7 @@ export default class Home extends React.Component {
                   ref={node => {
                     this.keyNode = node;
                   }}
+                  onKeyDown={this.authUser}
                 />
               </div>
               <div className="form-group">
