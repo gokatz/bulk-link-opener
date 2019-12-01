@@ -12,3 +12,13 @@
   word-break: break-all;
   font-size: 12px;
 }
+
+.browser-cta {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  position: fixed;
+  background: #e2f0ff;
+  padding: 1em;
+}

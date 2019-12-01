@@ -1,50 +1,18 @@
 import React, { Fragment } from "react";
-import Item from "./Item";
+import ItemList from "./ItemList";
 import TextInput from "./TextInput";
+import StaredFilter from "./StaredFilter";
 
 import "./styles.css";
+import ClientAuth from "./ClientAuth";
 
 export default class Home extends React.Component {
   state = {
-    items: [],
     isFetchingList: false,
     currentText: "",
-    isAuthenticated: false
+    isAuthenticated: false,
+    showOnlyStared: false
   };
-
-  componentDidMount() {
-    this.props.user && this.getTextsFromStorage();
-  }
-
-  getTextsFromStorage() {
-    this.setState({
-      isFetchingList: true
-    });
-
-    let listRef = window.firebase.database().ref(this.databaseRef);
-    listRef.on("value", snapshot => {
-      this.updateState(snapshot.val());
-      this.setState({
-        isFetchingList: false
-      });
-    });
-  }
-
-  updateState(value) {
-    console.log("Texts: ", value);
-    let normalizedItemsArray = [];
-    for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        let text = value[key];
-        text.id = key;
-        normalizedItemsArray.push(text);
-      }
-    }
-    this.setState({
-      items: normalizedItemsArray || []
-    });
-    return value;
-  }
 
   get dateRef() {
     let date = new Date();
@@ -57,7 +25,9 @@ export default class Home extends React.Component {
   // }
 
   get databaseRef() {
-    let { user: { uid = "" } = {} } = this.props;
+    console.log(this.props);
+    let { user } = this.props;
+    let { uid = "" } = user || {};
     return uid ? `users/${uid}` : null;
   }
 
@@ -82,45 +52,6 @@ export default class Home extends React.Component {
     });
   };
 
-  deleteItem = ({ id, star }) => {
-    if (star) {
-      alert("cannot delete a starred link");
-      return;
-    }
-    return window.firebase
-      .database()
-      .ref(`${this.databaseRef}/${id}`)
-      .remove();
-  };
-
-  starItem = id => {
-    return window.firebase
-      .database()
-      .ref(`${this.databaseRef}/${id}`)
-      .update({
-        star: true
-      });
-  };
-
-  unstarItem = id => {
-    return window.firebase
-      .database()
-      .ref(`${this.databaseRef}/${id}`)
-      .update({
-        star: false
-      });
-  };
-
-  openInBrowser = () => {
-    let items = this.state.items;
-    let selectedItems = items.filter(text => {
-      return text.isSelected;
-    });
-    selectedItems.forEach(text => {
-      window.open(text.value, "_blank");
-    });
-  };
-
   addText = async event => {
     let { keyCode, target } = event;
     if (keyCode !== 13) {
@@ -138,33 +69,22 @@ export default class Home extends React.Component {
     }
   };
 
+  handleViewChange = ({ showOnlyStared }) => {
+    this.setState({
+      showOnlyStared: showOnlyStared
+    });
+  };
+
   render() {
-    let { isFetchingList, items, currentText, isAuthenticated } = this.state;
-    let { isFetchingUser } = this.props;
-
-    let itemsList = (
-      <div className="text-center text-muted">No Items Found</div>
-    );
-
-    if (isFetchingList || isFetchingUser) {
-      itemsList = <div className="text-center text-muted">Loading...</div>;
-    } else if (items.length) {
-      itemsList = items.map(text => {
-        return (
-          <Item
-            text={text}
-            key={text.id}
-            deleteItem={this.deleteItem}
-            starItem={this.starItem}
-            unstarItem={this.unstarItem}
-          />
-        );
-      });
-    }
+    let { currentText, isAuthenticated, showOnlyStared } = this.state;
+    let { isFetchingUser, user } = this.props;
+    let { databaseRef, addText, writeUserData, handleViewChange } = this;
 
     return (
       <div className="App container">
-        <div className="col-xs-12 col-md-6">
+        <div className="col-xs-12 col-md-6" style={{
+          marginBottom: '5em'
+        }}>
           <TextInput
             updateInputText={value => {
               this.setState({
@@ -172,40 +92,33 @@ export default class Home extends React.Component {
               });
             }}
             currentText={currentText}
-            addText={this.addText}
-            writeUserData={this.writeUserData}
+            addText={addText}
+            writeUserData={writeUserData}
           />
 
           <hr />
 
           {isAuthenticated ? (
-            itemsList
-          ) : (
             <Fragment>
-              <div className="form-group">
-                <input
-                  className="form-control"
-                  placeholder="key"
-                  type="password"
-                  ref={node => {
-                    this.keyNode = node;
-                  }}
-                  onKeyDown={this.authUser}
-                />
-              </div>
-              <div className="form-group">
-                <button className="btn btn-secondary" onClick={this.authUser}>
-                  Enter Key
-                </button>
-              </div>
-            </Fragment>
-          )}
+              <StaredFilter
+                isAuthenticated={isAuthenticated}
+                onViewChange={handleViewChange}
+              />
 
-          <hr />
-          {itemsList.length && (
-            <button className="btn btn-primary" onClick={this.openInBrowser}>
-              Open In Browser
-            </button>
+              <ItemList
+                isFetchingUser={isFetchingUser}
+                user={user}
+                showOnlyStared={showOnlyStared}
+                databaseRef={databaseRef}
+              />
+            </Fragment>
+          ) : (
+            <ClientAuth
+              authUser={this.authUser}
+              updateKeyNode={node => {
+                this.keyNode = node;
+              }}
+            />
           )}
         </div>
       </div>
