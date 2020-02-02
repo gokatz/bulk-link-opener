@@ -117,7 +117,7 @@ export default class ItemList extends React.Component {
         )}
 
         {items.length ? (
-          <div class="browser-cta">
+          <div className="browser-cta">
             <button className="btn btn-primary" onClick={this.openInBrowser}>
               Open In Browser
             </button>

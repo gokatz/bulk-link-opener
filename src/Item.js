@@ -26,7 +26,12 @@ export default class Item extends React.Component {
         <div className="row">
           <div className="col-9">
             <div className="form-check">
-              <label className="form-check-label link-content" htmlFor={id}>
+              <label
+                className={`form-check-label link-content ${
+                  star ? "text-warning" : ""
+                }`}
+                htmlFor={id}
+              >
                 <input
                   className="form-check-input"
                   type="checkbox"
