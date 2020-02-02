@@ -10,7 +10,7 @@ export default class Home extends React.Component {
   state = {
     isFetchingList: false,
     currentText: "",
-    isAuthenticated: false,
+    isAuthenticated: true,
     showOnlyStared: false
   };
 
@@ -48,7 +48,8 @@ export default class Home extends React.Component {
     });
     return newItemDBRef.set({
       value: text,
-      date: this.dateRef
+      date: this.dateRef,
+      dateStr: new Date().getTime()
     });
   };
 
@@ -82,9 +83,12 @@ export default class Home extends React.Component {
 
     return (
       <div className="App container">
-        <div className="col-xs-12 col-md-6" style={{
-          marginBottom: '5em'
-        }}>
+        <div
+          className="col-xs-12 col-md-6"
+          style={{
+            marginBottom: "5em"
+          }}
+        >
           <TextInput
             updateInputText={value => {
               this.setState({
