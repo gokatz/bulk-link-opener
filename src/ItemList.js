@@ -45,6 +45,9 @@ export default class ItemList extends React.Component {
       alert("cannot delete a starred link");
       return;
     }
+    if (!window.confirm("Are you sure to delete this?")) {
+      return;
+    }
     return window.firebase
       .database()
       .ref(`${this.props.databaseRef}/${id}`)
