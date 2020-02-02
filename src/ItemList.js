@@ -19,6 +19,7 @@ export default class ItemList extends React.Component {
     let listRef = window.firebase.database().ref(this.props.databaseRef);
     listRef.on("value", snapshot => {
       let items = this.normalizeItems(snapshot.val());
+      items = items.reverse();
       this.setState({ items });
       this.setState({
         loading: false
@@ -112,13 +113,13 @@ export default class ItemList extends React.Component {
           <div className="text-center text-muted">No Items Found</div>
         )}
 
-        {items.length && (
+        {items.length ? (
           <div class="browser-cta">
             <button className="btn btn-primary" onClick={this.openInBrowser}>
               Open In Browser
             </button>
           </div>
-        )}
+        ) : null}
       </Fragment>
     );
   }
