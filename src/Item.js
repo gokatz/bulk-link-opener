@@ -16,6 +16,19 @@ export default class Item extends React.Component {
     return dateObj.toDateString();
   };
 
+  constructor() {
+    super(...arguments);
+    this.state = {
+      canShowMore: false
+    };
+  }
+
+  toggleMore = () => {
+    this.setState({
+      canShowMore: !this.state.canShowMore
+    });
+  };
+
   render() {
     let { text = {}, deleteItem, starItem, unstarItem } = this.props;
     let { id, star, value, lastOpened } = text;
@@ -26,8 +39,8 @@ export default class Item extends React.Component {
 
     return (
       <div className="">
-        <div className="row">
-          <div className="col-9">
+        <div className="row border mt-1">
+          <div className="col-11">
             <div className="form-check">
               <label
                 className={`form-check-label link-content ${
@@ -49,42 +62,55 @@ export default class Item extends React.Component {
                   {lastOpenedTime ? (
                     <>
                       <em className="text-muted italics">
-                        Op: {lastOpenedTime}
+                        Opened: {lastOpenedTime}
                       </em>
                       &nbsp; &bull; &nbsp;{" "}
                     </>
                   ) : null}
-                  <em className="text-muted italics">Cr: {dateString}</em>
+                  <em className="text-muted italics">Created: {dateString}</em>
                 </div>
               </label>
             </div>
           </div>
-          <div className="col-2">
-            {star ? (
-              <small
-                className="btn-link cursor-pointer"
-                onClick={() => unstarItem(id)}
-              >
-                (UnStar)
-              </small>
-            ) : (
-              <small
-                className="btn-link cursor-pointer"
-                onClick={() => starItem(id)}
-              >
-                (Star)
-              </small>
-            )}
-          </div>
-          <div className="col-1">
-            <small
-              className="btn-link cursor-pointer"
-              onClick={() => deleteItem(text)}
-            >
-              (Del)
-            </small>
+
+          <div
+            className="col-1 btn-link cursor-pointer"
+            onClick={this.toggleMore}
+          >
+            ☰
           </div>
         </div>
+        {this.state.canShowMore ? (
+          <div className="row">
+            <div
+              className="col-12 p-2 text-center"
+              style={{ backgroundColor: "#e2f0ff" }}
+            >
+              {star ? (
+                <small
+                  className="btn-link cursor-pointer"
+                  onClick={() => unstarItem(id)}
+                >
+                  UnStar
+                </small>
+              ) : (
+                <small
+                  className="btn-link cursor-pointer"
+                  onClick={() => starItem(id)}
+                >
+                  Star
+                </small>
+              )}
+              &nbsp; &bull; &nbsp;
+              <small
+                className="btn-link cursor-pointer"
+                onClick={() => deleteItem(text)}
+              >
+                Delete
+              </small>
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }
