@@ -1,4 +1,5 @@
 import React from "react";
+import { func } from "prop-types";
 
 export default class Item extends React.Component {
   computeDate = text => {
@@ -17,7 +18,9 @@ export default class Item extends React.Component {
 
   render() {
     let { text = {}, deleteItem, starItem, unstarItem } = this.props;
-    let { id, star, value } = text;
+    let { id, star, value, lastOpened } = text;
+
+    let lastOpenedTime = getLastOpenedTime(lastOpened);
 
     let dateString = this.computeDate(text);
 
@@ -41,8 +44,18 @@ export default class Item extends React.Component {
                   id={id}
                 />
                 {star ? "⭐ " : null}
-                <em className="text-muted italics"> {dateString} &nbsp; </em>
-                {value} &nbsp;&nbsp;
+                <div>
+                  <div className="mb-1">{value}</div>
+                  {lastOpenedTime ? (
+                    <>
+                      <em className="text-muted italics">
+                        Op: {lastOpenedTime}
+                      </em>
+                      &nbsp; &bull; &nbsp;{" "}
+                    </>
+                  ) : null}
+                  <em className="text-muted italics">Cr: {dateString}</em>
+                </div>
               </label>
             </div>
           </div>
@@ -75,4 +88,8 @@ export default class Item extends React.Component {
       </div>
     );
   }
+}
+
+function getLastOpenedTime(timeInMills) {
+  return timeInMills ? new Date(timeInMills).toDateString() : null;
 }

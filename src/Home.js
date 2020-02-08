@@ -10,7 +10,7 @@ export default class Home extends React.Component {
   state = {
     isFetchingList: false,
     currentText: "",
-    isAuthenticated: false,
+    isAuthenticated: true,
     showOnlyStared: false
   };
 

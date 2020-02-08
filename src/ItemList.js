@@ -78,9 +78,21 @@ export default class ItemList extends React.Component {
     });
   };
 
+  updateLastModifiedTime = id => {
+    return window.firebase
+      .database()
+      .ref(`${this.props.databaseRef}/${id}`)
+      .update({
+        lastOpened: new Date()
+      });
+  };
+
   openInBrowser = () => {
     let items = this.state.items;
     let selectedItems = items.filter(text => {
+      if (text.isSelected) {
+        this.updateLastModifiedTime(text.id);
+      }
       return text.isSelected;
     });
     selectedItems.forEach(text => {
