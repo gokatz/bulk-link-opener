@@ -140,6 +140,12 @@ export default class Home extends React.Component {
     });
   };
 
+  handleViewChange = ({ showOnlyStared }) => {
+    this.setState({
+      showOnlyStared: showOnlyStared
+    });
+  };
+
   render() {
     let { currentText, isAuthenticated, showOnlyStared } = this.state;
     let { isFetchingUser, user } = this.props;
@@ -179,6 +185,8 @@ export default class Home extends React.Component {
                 isAuthenticated={isAuthenticated}
                 onViewChange={handleViewChange}
               />
+
+              <DeselectAll />
 
               <ItemList
                 isFetchingUser={isFetchingUser}
