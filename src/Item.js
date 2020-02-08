@@ -56,18 +56,22 @@ export default class Item extends React.Component {
                   }}
                   id={id}
                 />
-                {star ? "⭐ " : null}
                 <div>
-                  <div className="mb-1">{value}</div>
+                  <div className="mb-1">
+                    {star ? "⭐ " : null}
+                    {value}
+                  </div>
                   {lastOpenedTime ? (
                     <>
-                      <em className="text-muted italics">
+                      <span className="text-muted italics">
                         Opened: {lastOpenedTime}
-                      </em>
+                      </span>
                       &nbsp; &bull; &nbsp;{" "}
                     </>
                   ) : null}
-                  <em className="text-muted italics">Created: {dateString}</em>
+                  <span className="text-muted italics">
+                    Created: {dateString}
+                  </span>
                 </div>
               </label>
             </div>

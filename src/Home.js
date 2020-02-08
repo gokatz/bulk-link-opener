@@ -41,16 +41,76 @@ export default class Home extends React.Component {
       return;
     }
 
+    var linksOrderedByValue = window.firebase
+      .database()
+      .ref(this.databaseRef)
+      .orderByChild("value")
+      .equalTo(text);
+
+    linksOrderedByValue.on("value", snapshot => {
+      var snap = snapshot.val();
+
+      // if already present
+      linksOrderedByValue.off("value");
+      if (snap) {
+        let [key] = Object.keys(snap);
+        alert("Already present. Stared for you");
+        this.starItem(key);
+        this.setState({
+          currentText: ""
+        });
+        return;
+      }
+      this.addData(text);
+    });
+  };
+
+  starItem = id => {
+    return window.firebase
+      .database()
+      .ref(`${this.databaseRef}/${id}`)
+      .update({
+        star: true
+      });
+  };
+
+  addData = text => {
+    let linkObj;
+
+    if (typeof text === "string") {
+      linkObj = {
+        value: text,
+        dateStr: new Date().getTime()
+      };
+    } else if (typeof text === "object") {
+      linkObj = text;
+      delete linkObj.id;
+      linkObj.dateStr = new Date().getTime();
+    }
+
     let paginatedListRef = window.firebase.database().ref(this.databaseRef);
     var newItemDBRef = paginatedListRef.push();
     this.setState({
       currentText: ""
     });
-    return newItemDBRef.set({
-      value: text,
-      date: this.dateRef,
-      dateStr: new Date().getTime()
-    });
+    return newItemDBRef.set(linkObj);
+  };
+
+  deleteItem = ({ id, star }, { force = false } = {}) => {
+    if (star) {
+      alert("cannot delete a starred link");
+      return;
+    }
+    if (!force) {
+      if (!window.confirm("Are you sure to delete this?")) {
+        return;
+      }
+    }
+
+    return window.firebase
+      .database()
+      .ref(`${this.databaseRef}/${id}`)
+      .remove();
   };
 
   addText = async event => {
@@ -79,7 +139,14 @@ export default class Home extends React.Component {
   render() {
     let { currentText, isAuthenticated, showOnlyStared } = this.state;
     let { isFetchingUser, user } = this.props;
-    let { databaseRef, addText, writeUserData, handleViewChange } = this;
+    let {
+      databaseRef,
+      addText,
+      writeUserData,
+      handleViewChange,
+      deleteItem,
+      starItem
+    } = this;
 
     return (
       <div className="App container">
@@ -114,6 +181,8 @@ export default class Home extends React.Component {
                 user={user}
                 showOnlyStared={showOnlyStared}
                 databaseRef={databaseRef}
+                deleteItem={deleteItem}
+                starItem={starItem}
               />
             </Fragment>
           ) : (

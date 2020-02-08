@@ -40,29 +40,6 @@ export default class ItemList extends React.Component {
     return normalizedItemsArray;
   };
 
-  deleteItem = ({ id, star }) => {
-    if (star) {
-      alert("cannot delete a starred link");
-      return;
-    }
-    if (!window.confirm("Are you sure to delete this?")) {
-      return;
-    }
-    return window.firebase
-      .database()
-      .ref(`${this.props.databaseRef}/${id}`)
-      .remove();
-  };
-
-  starItem = id => {
-    return window.firebase
-      .database()
-      .ref(`${this.props.databaseRef}/${id}`)
-      .update({
-        star: true
-      });
-  };
-
   unstarItem = id => {
     return window.firebase
       .database()
@@ -101,7 +78,7 @@ export default class ItemList extends React.Component {
   };
 
   render() {
-    let { isFetchingUser, showOnlyStared } = this.props;
+    let { isFetchingUser, showOnlyStared, deleteItem, starItem } = this.props;
     let { loading, items } = this.state;
 
     if (showOnlyStared) {
@@ -118,8 +95,8 @@ export default class ItemList extends React.Component {
               <Item
                 text={text}
                 key={text.id}
-                deleteItem={this.deleteItem}
-                starItem={this.starItem}
+                deleteItem={deleteItem}
+                starItem={starItem}
                 unstarItem={this.unstarItem}
               />
             );
