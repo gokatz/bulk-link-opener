@@ -54,12 +54,14 @@ export default class Home extends React.Component {
       linksOrderedByValue.off("value");
       if (snap) {
         let [key] = Object.keys(snap);
-        alert("Already present. Stared for you");
-        this.starItem(key);
-        this.setState({
-          currentText: ""
-        });
-        return;
+        if (key) {
+          this.setState({
+            currentText: ""
+          });
+          this.reAddData(Object.assign({}, snap[key]));
+          this.deleteItem({ id: key }, { force: true });
+          return;
+        }
       }
       this.addData(text);
     });
@@ -75,19 +77,21 @@ export default class Home extends React.Component {
   };
 
   addData = text => {
-    let linkObj;
+    let linkObj = {
+      value: text,
+      dateStr: new Date().getTime()
+    };
 
-    if (typeof text === "string") {
-      linkObj = {
-        value: text,
-        dateStr: new Date().getTime()
-      };
-    } else if (typeof text === "object") {
-      linkObj = text;
-      delete linkObj.id;
-      linkObj.dateStr = new Date().getTime();
-    }
+    this.pushNewDate(linkObj);
+  };
 
+  reAddData = (linkObj = {}) => {
+    delete linkObj.id;
+    linkObj.dateStr = linkObj.dateStr ? linkObj.dateStr : new Date().getTime();
+    this.pushNewDate(linkObj);
+  };
+
+  pushNewDate = linkObj => {
     let paginatedListRef = window.firebase.database().ref(this.databaseRef);
     var newItemDBRef = paginatedListRef.push();
     this.setState({
