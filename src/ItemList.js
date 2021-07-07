@@ -77,12 +77,29 @@ export default class ItemList extends React.Component {
     });
   };
 
+  deselectAll = () => {
+    return this.state.items.map(item => {
+      item.isSelected = false;
+      return item;
+    });
+  };
+
   render() {
-    let { isFetchingUser, showOnlyStared, deleteItem, starItem } = this.props;
+    let {
+      isFetchingUser,
+      showOnlyStared,
+      deleteItem,
+      starItem,
+      deselectAll
+    } = this.props;
     let { loading, items } = this.state;
 
     if (showOnlyStared) {
       items = this.filterItems();
+    }
+
+    if (deselectAll) {
+      items = this.deselectAll();
     }
 
     return (
